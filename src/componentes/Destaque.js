@@ -7,16 +7,16 @@ const Inicio = styled.div`
 		font-family:'Anton',sans-serif;
 		`
 const GlobalStyle = createGlobalStyle`
- @import url('https://fonts.googleapis.com/css?family=Anton&display=swap');
+ @import url('https://fonts.googleapis.com/css?family=Amatic+SC|Anton&display=swap');
 	body{
 		margin:0;
 	}
 `;
 
-export default ()=>(
+export default ({pelicula})=>(
 	<div>
       <GlobalStyle />
-     <Inicio>Pelicula destacada</Inicio>
+     <Inicio>{pelicula.title}</Inicio>
     </div>
 	
 	)
