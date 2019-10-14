@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Destaque from '../componentes/Destaque';
 import Estrenos from '../componentes/Estrenos';
 import TituloSeccion from '../componentes/TituloSeccion';
+import {connect} from 'react-redux';
 
 
 class HomePage extends React.Component{
@@ -17,6 +18,7 @@ class HomePage extends React.Component{
 	componentDidMount(){
 		this.getData()
 		this.getProximosEstrenos()
+		console.log(this.props.test)
 	}
 
 	getProximosEstrenos= async ()=>{
@@ -73,4 +75,10 @@ class HomePage extends React.Component{
 	}
 }
 
-export default HomePage;
+function mapStateToProps(store){
+	return{
+		test:store.test
+	}
+}
+
+export default connect(mapStateToProps)(HomePage);
