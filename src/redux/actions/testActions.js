@@ -1,4 +1,4 @@
-import tipos from './tipo'
+import tipo from './tipo'
 
 export const updateFecha = ()=>{
 	return {

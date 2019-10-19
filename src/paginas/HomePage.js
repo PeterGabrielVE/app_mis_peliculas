@@ -1,84 +1,59 @@
 import React from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
+import Header from '../componentes/Header';
 import Destaque from '../componentes/Destaque';
 import Estrenos from '../componentes/Estrenos';
 import TituloSeccion from '../componentes/TituloSeccion';
 import {connect} from 'react-redux';
+import {getEstrenos,getProximosEstrenos} from '../redux/actions/moviesAction';
 
+import SearchResults from '../componentes/SearchResults'
 
 class HomePage extends React.Component{
 
-	state = {
-		peliculas:[],
-		peliculaDestacada:"",
-		proximos_estrenos:[]
-	}
-
 	componentDidMount(){
-		this.getData()
-		this.getProximosEstrenos()
-		console.log(this.props.test)
-	}
-
-	getProximosEstrenos= async ()=>{
-
-		try{
-			const resultados = await axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=c3df82229c56b91a48d095befaca0bfc&language=es')
-			
-			this.setState({
-				proximos_estrenos:resultados.data.results
-		})
-		}catch(error){
-			console.log(error.message)
-		}
-
+		this.props.getEstrenos()
+		this.props.getProximosEstrenos()
 		
 	}
 
+	renderResults = ()=>{
+		const {data} = this.props.search
 
-	getData = async ()=>{
-
-		try{
-			const resultados = await axios.get('https://api.themoviedb.org/3/movie/now_playing?api_key=c3df82229c56b91a48d095befaca0bfc&language=es')
-			console.log(resultados.data.results)
-			this.setPeliculasDestacadas(resultados.data.results)
-			this.setState({
-				peliculas:resultados.data.results
-		})
-		}catch(error){
-			console.log(error.message)
+		if(data.length === 0){
+			return(
+				<div>
+					<Destaque pelicula={this.props.estrenos.peliculaDestacada}/>
+					<TituloSeccion>Estrenos:</TituloSeccion>
+					<Estrenos peliculas={this.props.estrenos.data}/>
+					<TituloSeccion>Proximamente:</TituloSeccion>
+					<Estrenos peliculas={this.props.proximos_estrenos.data}/>
+				</div>
+			)
+		}else{
+			return(
+					<SearchResults data={this.props.search.data}/>
+				)
 		}
-
-		
 	}
-
-	setPeliculasDestacadas(peliculas){
-
-		const peliculaDestacada = peliculas[Math.floor(Math.random()*peliculas.length)]
-		this.setState({
-			peliculaDestacada
-		})
-	}
-
 
 	render(){
 		return(
-			<div>
-				<Destaque pelicula={this.state.peliculaDestacada}/>
-				<TituloSeccion>Estrenos:</TituloSeccion>
-				<Estrenos peliculas={this.state.peliculas} />
-				<TituloSeccion>Proximamente:</TituloSeccion>
-				<Estrenos peliculas={this.state.proximos_estrenos} />
-			</div>
-			);
+				<div>
+					<Header path={this.props.match.path}/>
+					{this.renderResults()}
+				</div>
+		
+		)
 	}
 }
 
-function mapStateToProps(store){
+function mapStateToProps({test,estrenos,proximos_estrenos,search}){
 	return{
-		test:store.test
+
+		estrenos,proximos_estrenos,search
 	}
 }
 
-export default connect(mapStateToProps)(HomePage);
+export default connect(mapStateToProps,{
+	getEstrenos,getProximosEstrenos
+})(HomePage);
